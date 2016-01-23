@@ -39,11 +39,9 @@ window.addEventListener("message", function(event) {
     return;
 
   if (event.data.type && (event.data.type == "FROM_PAGE")) {
-    console.log("Content script received: ");console.log(event.data);
 
     var current_time = event.data.current_time;
     var description = event.data.description;
-    console.log(current_time, description);
 
     var url = getWatchUrl();
 
@@ -97,63 +95,80 @@ window.addEventListener("message", function(event) {
   }
 }, false);
 
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if(request.operation == 'toggle_sidebar') {
+      if(request.visible) {
+          $('#youtube-bookmarks-sidebar').fadeIn();
+      } else {
+          $('#youtube-bookmarks-sidebar').fadeOut();
+      }
+    }
+  });
+
 function addBookmark() {
   window.postMessage({type: "FROM_CONTENT_SCRIPT", add_current_bookmark: true}, "*");
 }
 
 
 window.onload = function () {
-  console.log('Hello World!');
-
   yt = document.getElementById('movie_player');
 
-  // Add the sidebar
-  var sidebar = $(document.createElement('div'));
-  sidebar.addClass('youtube-bookmarks-sidebar wordwrap');
+  chrome.storage.sync.get('sidebarVisible', function(res) {
+    console.log(res);
 
-  var add_bookmark_button = $(document.createElement('button'));
-  add_bookmark_button.attr('id', 'youtube-bookmarks-button');
-  add_bookmark_button.addClass('yt-uix-button yt-uix-button-default youtube-bookmarks-button');
-  add_bookmark_button.prop('value', 'Add Bookmark');
-  add_bookmark_button.text('Add Bookmark');
-  add_bookmark_button.click(addBookmark);
-  add_bookmark_button.removeAttr('onhover');
-  sidebar.append(add_bookmark_button);
+    var visible = res['sidebarVisible'] && res['sidebarVisible']['visible'];
 
-  var description = $('<input type="text" name="youtube-bookmark-description" id="youtube-bookmark-description" placeholder="Description"></input>');
-  description.addClass('youtube-bookmark-description');
-  sidebar.append(description);
+    // Add the sidebar
+    var sidebar = $(document.createElement('div'));
+    sidebar.addClass('youtube-bookmarks-sidebar wordwrap');
+    sidebar.attr('id', 'youtube-bookmarks-sidebar');
+    sidebar.css('display', (visible ? 'initial' : 'none'));
 
-  var message_box = $('<span id="youtube-bookmark-message" style="display: none;"></span>');
-  sidebar.append(message_box);
+    var add_bookmark_button = $(document.createElement('button'));
+    add_bookmark_button.attr('id', 'youtube-bookmarks-button');
+    add_bookmark_button.addClass('yt-uix-button yt-uix-button-default youtube-bookmarks-button');
+    add_bookmark_button.prop('value', 'Add Bookmark');
+    add_bookmark_button.text('Add Bookmark');
+    add_bookmark_button.click(addBookmark);
+    add_bookmark_button.removeAttr('onhover');
+    sidebar.append(add_bookmark_button);
 
-  var bookmarks_title = $(document.createElement('div'));
-  bookmarks_title.addClass('youtube-bookmarks-title');
-  bookmarks_title.text('Bookmarks');
-  sidebar.append(bookmarks_title);
+    var description = $('<input type="text" name="youtube-bookmark-description" id="youtube-bookmark-description" placeholder="Description"></input>');
+    description.addClass('youtube-bookmark-description');
+    sidebar.append(description);
 
-  var bookmarks_list = $(document.createElement('ul'));
-  bookmarks_list.attr('id', 'youtube-bookmarks-list');
-  sidebar.append(bookmarks_list);
+    var message_box = $('<span id="youtube-bookmark-message" style="display: none;"></span>');
+    sidebar.append(message_box);
 
-  // TODO: Load data from storage and add it to the list of bookmarks
-  var url = getWatchUrl();
-  chrome.storage.sync.get(url, function(res) {
-    if(res[url]) {
-      var items = res[url].items;
-      for(var i = 0; i < items.length; i++) {
-        window.postMessage({type: "FROM_CONTENT_SCRIPT", add_bookmark: true, sec_num: items[i].current_time, description: items[i].description}, "*");
+    var bookmarks_title = $(document.createElement('div'));
+    bookmarks_title.addClass('youtube-bookmarks-title');
+    bookmarks_title.text('Bookmarks');
+    sidebar.append(bookmarks_title);
+
+    var bookmarks_list = $(document.createElement('ul'));
+    bookmarks_list.attr('id', 'youtube-bookmarks-list');
+    sidebar.append(bookmarks_list);
+
+    // TODO: Load data from storage and add it to the list of bookmarks
+    var url = getWatchUrl();
+    chrome.storage.sync.get(url, function(res) {
+      if(res[url]) {
+        var items = res[url].items;
+        for(var i = 0; i < items.length; i++) {
+          window.postMessage({type: "FROM_CONTENT_SCRIPT", add_bookmark: true, sec_num: items[i].current_time, description: items[i].description}, "*");
+        }
       }
-    }
-  });
+    });
 
-  sidebar.insertBefore(yt);
+    sidebar.insertBefore(yt);
 
-  $('#youtube-bookmark-description').keypress(function(e){
-      console.log('ree');
-      if(e.keyCode==13) {
-        $('#youtube-bookmarks-button').click();
-      }
+    $('#youtube-bookmark-description').keypress(function(e){
+        if(e.keyCode==13) {
+          $('#youtube-bookmarks-button').click();
+        }
+    });
   });
 }
 

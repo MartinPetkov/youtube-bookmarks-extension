@@ -80,8 +80,6 @@ window.addEventListener("message", function(event) {
     return;
 
   if (event.data.type && (event.data.type == "FROM_CONTENT_SCRIPT")) {
-    console.log("Page received: ");console.log(event.data);
-
     if(event.data.add_current_bookmark) {
       var sec_num = getCurrentVideoTime();
       var description = $('#youtube-bookmark-description').val();
