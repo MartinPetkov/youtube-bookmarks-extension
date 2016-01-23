@@ -9,11 +9,12 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/watch*"],
-      "css": ["style.css"],
-      "js": ["youtube-bookmarks.js", "useful_functions.js", "jquery-2.2.0.min.js"],
+      "css": ["style.css", "bootstrap.min.css"],
+      "js": ["contentscript.js"],
       "run_at": "document_end"
     }
   ],
+  "web_accessible_resources": ["youtube-bookmarks.js", "jquery-2.2.0.min.js"],
 
   "icons": {
       "16": "icon16.png",

@@ -1,0 +1,35 @@
+.youtube-bookmarks-sidebar {
+  position: absolute;
+  background-color: #f3f3f3;
+  width: 150px;
+  height: 100%;
+  left: -150px;
+  border: 2px solid #a3a3a3;
+  padding: 10px;
+  color: black;
+}
+
+.youtube-bookmarks-title {
+  width: 100%;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  font-size: 20px;
+  border-bottom: 1px solid #a3a3a3;
+}
+
+button.youtube-bookmarks-button {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Source: http://snipplr.com/view/10979/css-cross-browser-word-wrap */
+.wordwrap {
+   white-space: pre-wrap;      /* CSS3 */
+   white-space: -moz-pre-wrap; /* Firefox */
+   white-space: -pre-wrap;     /* Opera <7 */
+   white-space: -o-pre-wrap;   /* Opera 7 */
+   word-wrap: break-word;      /* IE */
+}
