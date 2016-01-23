@@ -24,6 +24,25 @@
   border-bottom: 1px solid #a3a3a3;
 }
 
+button.youtube-bookmarks-button,
+button.youtube-bookmarks-button:hover {
+  width: 100%;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  font-family: Roboto, arial, sans-serif;
+  font-size: 15px;
+  background-color: #286090;
+  border-color: #204d74;
+  color: #fff;
+}
+
+.youtube-bookmark-description {
+  padding: 5px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
 button.a-remove-btn {
   border: 1px solid black;
   margin-right: 5px;
@@ -36,18 +55,6 @@ a.youtube-bookmark {
 
 .youtube-bookmark-li {
   margin-bottom: 10px;
-}
-
-button.youtube-bookmarks-button,
-button.youtube-bookmarks-button:hover {
-  width: 100%;
-  margin-bottom: 15px;
-  margin-top: 10px;
-  font-family: Roboto, arial, sans-serif;
-  font-size: 15px;
-  background-color: #286090;
-  border-color: #204d74;
-  color: #fff;
 }
 
 /* Source: http://snipplr.com/view/10979/css-cross-browser-word-wrap */

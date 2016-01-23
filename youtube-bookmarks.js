@@ -44,6 +44,8 @@ function makeSeekTo(h, m, s){
 
 function addBookmark() {
   var sec_num = getCurrentVideoTime();
+  var description = $('#youtube-bookmark-description').val();
+  $('#youtube-bookmark-description').val('');
 
   var a = $(document.createElement('a'));
   a.addClass('youtube-bookmark');
@@ -51,13 +53,19 @@ function addBookmark() {
   a.attr('onclick', makeSeekTo(getHours(sec_num), getMinutes(sec_num), getSeconds(sec_num)));
   a.text(makeStrTime(sec_num))
 
-  var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove">X</button>');
+  var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove"><bold>X<bold></button>');
   a_remove_btn.click(removeBookmark);
 
   var li = $(document.createElement('li'));
   li.addClass('youtube-bookmark-li');
   li.append(a_remove_btn);
   li.append(a);
+
+  if(description) {
+    var desc = $(document.createElement('span'));
+    desc.text(': ' + description);
+    li.append(desc);
+  }
 
   $('#youtube-bookmarks-list').append(li);
 }
@@ -85,6 +93,10 @@ window.onload = function () {
   add_bookmark_button.click(addBookmark);
   add_bookmark_button.removeAttr('onhover');
   sidebar.append(add_bookmark_button);
+
+  var description = $('<input type="text" name="youtube-bookmark-description" id="youtube-bookmark-description" placeholder="Description"></input>');
+  description.addClass('youtube-bookmark-description');
+  sidebar.append(description);
 
   var bookmarks_title = $(document.createElement('div'));
   bookmarks_title.addClass('youtube-bookmarks-title');
