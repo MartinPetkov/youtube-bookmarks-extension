@@ -1,12 +1,12 @@
 .youtube-bookmarks-sidebar {
   position: absolute;
   background-color: #f3f3f3;
-  width: 150px;
+  width: 175px;
   height: 100%;
-  left: -170px;
-  outline-width: 2px;
-  outline-style: solid;
-  outline-color: #a3a3a3;
+  left: -199px;
+  border-width: 0px 2px 0px 2px;
+  border-style: solid;
+  border-color: #a3a3a3;
   padding-left: 10px;
   padding-right: 10px;
   color: black;
