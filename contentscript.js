@@ -15,6 +15,19 @@ j.onload = function() {
 (document.head || document.documentElement).appendChild(j);
 
 
+function showMessage(msg, color) {
+  msg_box = $("#youtube-bookmark-message");
+  msg_box.text(msg);
+  msg_box.css('color', color)
+
+  msg_box.css('display', 'block');
+  setTimeout(function() {
+    msg_box.css('display', 'none');
+    msg_box.text('');
+  }, 5000)
+}
+
+
 window.addEventListener("message", function(event) {
   // We only accept messages from ourselves
   if (event.source != window)
@@ -27,12 +40,46 @@ window.addEventListener("message", function(event) {
     var description = event.data.description;
     console.log(current_time, description);
 
-    if(event.data.operation == 'added_bookmark') {
-      // TODO: Save these in Chrome storage
-    } else if(event.data.operation == 'removed_bookmark') {
-      // TODO: Remove the bookmark
-    }
+    var url = window.location.href;
 
+    if(event.data.operation == 'added_bookmark') {
+      // Add a bookmark to storage
+      chrome.storage.sync.get(url, function(res) {
+        var items = res.items;
+        console.log(res);
+        if(!items) {
+          items = [];
+        }
+
+        items.push({'current_time': current_time, 'description': description});
+        chrome.storage.sync.set({url: {'items': items}}, function () {
+          // Notify that we saved
+          showMessage('Bookmark saved', 'green');
+        });
+      });
+
+    } else if(event.data.operation == 'removed_bookmark') {
+      // Remove the bookmark from storage
+      chrome.storage.sync.get(url, function(res) {
+        var items = res.items;
+        console.log(res);
+        if(items) {
+          // Find this bookmark, or one just like it, in the array
+          for(var i = 0; i < items.length; i++) {
+            if(items[i].current_time == current_time
+                && items[i].description == description) {
+              items.splice(i, 1); // Convoluted way to remove an element at that index
+              break;
+            }
+          }
+        }
+
+        chrome.storage.sync.set({url: {'items': items}}, function () {
+          // Notify that we removed the bookmark
+          showMessage('Bookmark removed', 'red');
+        });
+      });
+    }
   }
 }, false);
 
@@ -62,6 +109,9 @@ window.onload = function () {
   description.addClass('youtube-bookmark-description');
   sidebar.append(description);
 
+  var message_box = $('<span id="youtube-bookmark-message" style="display: none;"></span>');
+  sidebar.append(message_box);
+
   var bookmarks_title = $(document.createElement('div'));
   bookmarks_title.addClass('youtube-bookmarks-title');
   bookmarks_title.text('Bookmarks');
@@ -70,6 +120,14 @@ window.onload = function () {
   var bookmarks_list = $(document.createElement('ul'));
   bookmarks_list.attr('id', 'youtube-bookmarks-list');
   sidebar.append(bookmarks_list);
+
+  // TODO: Load data from storage and add it to the list of bookmarks
+  var url = window.location.href;
+  chrome.storage.sync.get(url, function(res) {
+    var items = res.items;
+    console.log(res);
+    console.log(items);
+  });
 
   sidebar.insertBefore(yt);
 }

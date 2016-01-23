@@ -2,11 +2,11 @@
   position: absolute;
   background-color: #f3f3f3;
   width: 150px;
-  height: 99%;
+  height: 100%;
   left: -170px;
-  border-width: 2px 0px 2px 2px;
-  border-style: solid;
-  border-color: #a3a3a3;
+  outline-width: 2px;
+  outline-style: solid;
+  outline-color: #a3a3a3;
   padding-left: 10px;
   padding-right: 10px;
   color: black;
@@ -19,6 +19,7 @@
   text-align: center;
   vertical-align: middle;
   padding-bottom: 5px;
+  margin-top: 20px;
   margin-bottom: 5px;
   font-size: 20px;
   border-bottom: 1px solid #a3a3a3;
@@ -38,9 +39,9 @@ button.youtube-bookmarks-button:hover {
 
 .youtube-bookmark-description {
   padding: 5px;
-  margin-bottom: 20px;
   box-sizing: border-box;
   width: 100%;
+  margin-bottom: 5px;
 }
 
 button.a-remove-btn {
@@ -64,4 +65,10 @@ a.youtube-bookmark {
    white-space: -pre-wrap;     /* Opera <7 */
    white-space: -o-pre-wrap;   /* Opera 7 */
    word-wrap: break-word;      /* IE */
+}
+
+#youtube-bookmark-message {
+  color: green;
+  display: block;
+  text-align: center;
 }
