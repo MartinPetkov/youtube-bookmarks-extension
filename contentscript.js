@@ -49,18 +49,21 @@ window.addEventListener("message", function(event) {
 
     if(event.data.operation == 'added_bookmark') {
       // Add a bookmark to storage
-      chrome.storage.local.get(url, function(res) {
-        var items = res[url].items;
-        console.log(res);
-        if(!items) {
-          items = [];
+      chrome.storage.sync.get(url, function(res) {
+        var items = [];
+
+        if(res[url]) {
+          var items = res[url].items;
+          if(!items) {
+            items = [];
+          }
         }
 
         items.push({'current_time': current_time, 'description': description});
 
         var obj = {};
         obj[url] = {'items': items};
-        chrome.storage.local.set(obj, function () {
+        chrome.storage.sync.set(obj, function () {
           // Notify that we saved
           showMessage('Bookmark saved', 'green');
         });
@@ -68,26 +71,27 @@ window.addEventListener("message", function(event) {
 
     } else if(event.data.operation == 'removed_bookmark') {
       // Remove the bookmark from storage
-      chrome.storage.local.get(url, function(res) {
-        var items = res[url].items;
-        console.log(res);
-        if(items) {
-          // Find this bookmark, or one just like it, in the array
-          for(var i = 0; i < items.length; i++) {
-            if(items[i].current_time == current_time
-                && items[i].description == description) {
-              items.splice(i, 1); // Convoluted way to remove an element at that index
-              break;
+      chrome.storage.sync.get(url, function(res) {
+        if(res[url]) {
+          var items = res[url].items;
+          if(items) {
+            // Find this bookmark, or one just like it, in the array
+            for(var i = 0; i < items.length; i++) {
+              if(items[i].current_time == current_time
+                  && items[i].description == description) {
+                items.splice(i, 1); // Convoluted way to remove an element at that index
+                break;
+              }
             }
           }
-        }
 
-        var obj = {};
-        obj[url] = {'items': items};
-        chrome.storage.local.set(obj, function () {
-          // Notify that we removed the bookmark
-          showMessage('Bookmark removed', 'red');
-        });
+          var obj = {};
+          obj[url] = {'items': items};
+          chrome.storage.sync.set(obj, function () {
+            // Notify that we removed the bookmark
+            showMessage('Bookmark removed', 'red');
+          });
+        }
       });
     }
   }
@@ -108,6 +112,7 @@ window.onload = function () {
   sidebar.addClass('youtube-bookmarks-sidebar wordwrap');
 
   var add_bookmark_button = $(document.createElement('button'));
+  add_bookmark_button.attr('id', 'youtube-bookmarks-button');
   add_bookmark_button.addClass('yt-uix-button yt-uix-button-default youtube-bookmarks-button');
   add_bookmark_button.prop('value', 'Add Bookmark');
   add_bookmark_button.text('Add Bookmark');
@@ -133,13 +138,22 @@ window.onload = function () {
 
   // TODO: Load data from storage and add it to the list of bookmarks
   var url = getWatchUrl();
-  chrome.storage.local.get(url, function(res) {
-    var items = res[url].items;
-    for(var i = 0; i < items.length; i++) {
-      window.postMessage({type: "FROM_CONTENT_SCRIPT", add_bookmark: true, sec_num: items[i].current_time, description: items[i].description}, "*");
+  chrome.storage.sync.get(url, function(res) {
+    if(res[url]) {
+      var items = res[url].items;
+      for(var i = 0; i < items.length; i++) {
+        window.postMessage({type: "FROM_CONTENT_SCRIPT", add_bookmark: true, sec_num: items[i].current_time, description: items[i].description}, "*");
+      }
     }
   });
 
   sidebar.insertBefore(yt);
+
+  $('#youtube-bookmark-description').keypress(function(e){
+      console.log('ree');
+      if(e.keyCode==13) {
+        $('#youtube-bookmarks-button').click();
+      }
+  });
 }
 
