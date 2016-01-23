@@ -9,12 +9,16 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/watch*"],
-      "css": ["style.css", "bootstrap.min.css"],
+      "css": ["style.css"],
       "js": ["contentscript.js"],
       "run_at": "document_end"
     }
   ],
-  "web_accessible_resources": ["youtube-bookmarks.js", "jquery-2.2.0.min.js"],
+  "web_accessible_resources": [
+    "youtube-bookmarks.js",
+    "jquery-2.2.0.min.js",
+    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/*"
+  ],
 
   "icons": {
       "16": "icon16.png",

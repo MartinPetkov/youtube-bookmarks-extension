@@ -36,23 +36,37 @@ function getCurrentVideoTime() {
   return document.getElementById('movie_player').getCurrentTime();
 }
 
+
 function makeSeekTo(h, m, s){
   return 'yt.seekTo(('+h.toString()+'*60+'+m.toString()+')*60+'+s.toString()+');return false;';
 }
+
 
 function addBookmark() {
   var sec_num = getCurrentVideoTime();
 
   var a = $(document.createElement('a'));
+  a.addClass('youtube-bookmark');
   a.attr('href', '#');
   a.attr('onclick', makeSeekTo(getHours(sec_num), getMinutes(sec_num), getSeconds(sec_num)));
   a.text(makeStrTime(sec_num))
 
+  var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove">X</button>');
+  a_remove_btn.click(removeBookmark);
+
   var li = $(document.createElement('li'));
+  li.addClass('youtube-bookmark-li');
+  li.append(a_remove_btn);
   li.append(a);
 
   $('#youtube-bookmarks-list').append(li);
 }
+
+
+function removeBookmark() {
+  $(this).parent().remove();
+}
+
 
 
 window.onload = function () {
@@ -65,10 +79,11 @@ window.onload = function () {
   sidebar.addClass('youtube-bookmarks-sidebar wordwrap');
 
   var add_bookmark_button = $(document.createElement('button'));
-  add_bookmark_button.addClass('btn btn-default youtube-bookmarks-button');
+  add_bookmark_button.addClass('yt-uix-button yt-uix-button-default youtube-bookmarks-button');
   add_bookmark_button.prop('value', 'Add Bookmark');
   add_bookmark_button.text('Add Bookmark');
   add_bookmark_button.click(addBookmark);
+  add_bookmark_button.removeAttr('onhover');
   sidebar.append(add_bookmark_button);
 
   var bookmarks_title = $(document.createElement('div'));
