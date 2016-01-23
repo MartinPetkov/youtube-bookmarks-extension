@@ -27,6 +27,11 @@ function showMessage(msg, color) {
   }, 5000)
 }
 
+function getWatchUrl() {
+  var url = window.location.href;
+  return url.slice(url.indexOf('watch?v=')+8, (url.indexOf('#') > -1 ? url.indexOf('#') : url.length))
+}
+
 
 window.addEventListener("message", function(event) {
   // We only accept messages from ourselves
@@ -40,19 +45,22 @@ window.addEventListener("message", function(event) {
     var description = event.data.description;
     console.log(current_time, description);
 
-    var url = window.location.href;
+    var url = getWatchUrl();
 
     if(event.data.operation == 'added_bookmark') {
       // Add a bookmark to storage
-      chrome.storage.sync.get(url, function(res) {
-        var items = res.items;
+      chrome.storage.local.get(url, function(res) {
+        var items = res[url].items;
         console.log(res);
         if(!items) {
           items = [];
         }
 
         items.push({'current_time': current_time, 'description': description});
-        chrome.storage.sync.set({url: {'items': items}}, function () {
+
+        var obj = {};
+        obj[url] = {'items': items};
+        chrome.storage.local.set(obj, function () {
           // Notify that we saved
           showMessage('Bookmark saved', 'green');
         });
@@ -60,8 +68,8 @@ window.addEventListener("message", function(event) {
 
     } else if(event.data.operation == 'removed_bookmark') {
       // Remove the bookmark from storage
-      chrome.storage.sync.get(url, function(res) {
-        var items = res.items;
+      chrome.storage.local.get(url, function(res) {
+        var items = res[url].items;
         console.log(res);
         if(items) {
           // Find this bookmark, or one just like it, in the array
@@ -74,7 +82,9 @@ window.addEventListener("message", function(event) {
           }
         }
 
-        chrome.storage.sync.set({url: {'items': items}}, function () {
+        var obj = {};
+        obj[url] = {'items': items};
+        chrome.storage.local.set(obj, function () {
           // Notify that we removed the bookmark
           showMessage('Bookmark removed', 'red');
         });
@@ -122,11 +132,12 @@ window.onload = function () {
   sidebar.append(bookmarks_list);
 
   // TODO: Load data from storage and add it to the list of bookmarks
-  var url = window.location.href;
-  chrome.storage.sync.get(url, function(res) {
-    var items = res.items;
-    console.log(res);
-    console.log(items);
+  var url = getWatchUrl();
+  chrome.storage.local.get(url, function(res) {
+    var items = res[url].items;
+    for(var i = 0; i < items.length; i++) {
+      window.postMessage({type: "FROM_CONTENT_SCRIPT", add_bookmark: true, sec_num: items[i].current_time, description: items[i].description}, "*");
+    }
   });
 
   sidebar.insertBefore(yt);
