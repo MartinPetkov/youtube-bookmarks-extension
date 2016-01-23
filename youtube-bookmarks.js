@@ -41,7 +41,36 @@ function makeSeekTo(h, m, s){
 }
 
 function removeBookmark() {
+  var parent_li = $(this).parent();
+  window.postMessage({type: "FROM_PAGE", operation: "removed_bookmark", current_time: parent_li.attr('sec_num'), description: parent_li.attr('description')}, "*");
   $(this).parent().remove();
+}
+
+
+function insertBookmark(sec_num, description) {
+  var a = $(document.createElement('a'));
+  a.addClass('youtube-bookmark');
+  a.attr('href', '#');
+  a.attr('onclick', makeSeekTo(getHours(sec_num), getMinutes(sec_num), getSeconds(sec_num)));
+  a.text(makeStrTime(sec_num))
+
+  var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove"><bold>X<bold></button>');
+  a_remove_btn.click(removeBookmark);
+
+  var li = $(document.createElement('li'));
+  li.addClass('youtube-bookmark-li');
+  li.attr('sec_num', sec_num);
+  li.attr('description', description);
+  li.append(a_remove_btn);
+  li.append(a);
+
+  if(description) {
+    var desc = $(document.createElement('span'));
+    desc.text(': ' + description);
+    li.append(desc);
+  }
+
+  $('#youtube-bookmarks-list').append(li);
 }
 
 
@@ -51,39 +80,22 @@ window.addEventListener("message", function(event) {
     return;
 
   if (event.data.type && (event.data.type == "FROM_CONTENT_SCRIPT")) {
-    console.log("Page received: " + event.data);
+    console.log("Page received: ");console.log(event.data);
 
     if(event.data.add_current_bookmark) {
       var sec_num = getCurrentVideoTime();
       var description = $('#youtube-bookmark-description').val();
       $('#youtube-bookmark-description').val('');
 
-      var a = $(document.createElement('a'));
-      a.addClass('youtube-bookmark');
-      a.attr('href', '#');
-      a.attr('onclick', makeSeekTo(getHours(sec_num), getMinutes(sec_num), getSeconds(sec_num)));
-      a.text(makeStrTime(sec_num))
+      insertBookmark(sec_num, description);
 
-      var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove"><bold>X<bold></button>');
-      a_remove_btn.click(removeBookmark);
+      // Send back data so it can be stored
+      window.postMessage({type: "FROM_PAGE", operation: "added_bookmark", current_time: sec_num, description: description}, "*");
 
-      var li = $(document.createElement('li'));
-      li.addClass('youtube-bookmark-li');
-      li.append(a_remove_btn);
-      li.append(a);
 
-      if(description) {
-        var desc = $(document.createElement('span'));
-        desc.text(': ' + description);
-        li.append(desc);
-      }
-
-      $('#youtube-bookmarks-list').append(li);
-
-      window.postMessage({type: "FROM_PAGE", current_time: sec_num, description: description}, "*");
-
+    // Adds an existing bookmark loaded from storage
     } else if (event.data.add_bookmark) {
-      console.log(event.data);
+      insertBookmark(event.data.sec_num, event.data.description);
     }
   }
 }, false);

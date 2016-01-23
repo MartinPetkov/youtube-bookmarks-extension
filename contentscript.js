@@ -21,12 +21,17 @@ window.addEventListener("message", function(event) {
     return;
 
   if (event.data.type && (event.data.type == "FROM_PAGE")) {
-    console.log("Content script received: " + event.data);
+    console.log("Content script received: ");console.log(event.data);
 
-    // TODO: Save these in Chrome storage
     var current_time = event.data.current_time;
     var description = event.data.description;
     console.log(current_time, description);
+
+    if(event.data.operation == 'added_bookmark') {
+      // TODO: Save these in Chrome storage
+    } else if(event.data.operation == 'removed_bookmark') {
+      // TODO: Remove the bookmark
+    }
 
   }
 }, false);
