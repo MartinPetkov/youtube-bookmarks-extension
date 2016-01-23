@@ -1,4 +1,4 @@
-.youtube-bookmarks-sidebar {
+div.youtube-bookmarks-sidebar {
   position: absolute;
   background-color: #f3f3f3;
   width: 175px;
@@ -8,6 +8,15 @@
   padding-right: 10px;
   color: black;
   overflow: auto;
+  font-family: Ubuntu, Consolas, arial, sans-serif;
+}
+
+div#youtube-bookmarks-sidebar button#youtube-bookmarks-button {
+  font-family: Ubuntu, Consolas, arial, sans-serif;
+}
+
+div#youtube-bookmarks-sidebar input#youtube-bookmark-description {
+  font-family: Ubuntu, Consolas, arial, sans-serif;
 }
 
 .youtube-bookmarks-title {
@@ -27,7 +36,6 @@ button.youtube-bookmarks-button:hover {
   width: 100%;
   margin-bottom: 5px;
   margin-top: 10px;
-  font-family: Roboto, arial, sans-serif;
   font-size: 15px;
   background-color: #286090;
   border-color: #204d74;

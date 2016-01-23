@@ -14,6 +14,18 @@ j.onload = function() {
 
 (document.head || document.documentElement).appendChild(j);
 
+var l1 = document.createElement('link');
+l1.rel = 'stylesheet';
+l1.type = 'text/css';
+l1.href = 'https://fonts.googleapis.com/css?family=Ubuntu';
+(document.head || document.documentElement).appendChild(l1);
+
+var l2 = document.createElement('link');
+l2.rel = 'stylesheet';
+l2.type = 'text/css';
+l2.href = 'https://fonts.googleapis.com/css?family=Consolas';
+(document.head || document.documentElement).appendChild(l2);
+
 
 function showMessage(msg, color) {
   msg_box = $("#youtube-bookmark-message");

@@ -54,7 +54,7 @@ function insertBookmark(sec_num, description) {
   a.attr('onclick', makeSeekTo(getHours(sec_num), getMinutes(sec_num), getSeconds(sec_num)));
   a.text(makeStrTime(sec_num))
 
-  var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove"><bold>X<bold></button>');
+  var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove">X</button>');
   a_remove_btn.click(removeBookmark);
 
   var li = $(document.createElement('li'));

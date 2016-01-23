@@ -22,7 +22,7 @@
   "web_accessible_resources": [
     "youtube-bookmarks.js",
     "jquery-2.2.0.min.js",
-    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/*"
+    "https://fonts.googleapis.com/css?family=*"
   ],
 
   "browser_action": {
