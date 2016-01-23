@@ -10,7 +10,7 @@
     {
       "matches": ["*://www.youtube.com/watch*"],
       "css": ["style.css"],
-      "js": ["contentscript.js"],
+      "js": ["contentscript.js", "jquery-2.2.0.min.js"],
       "run_at": "document_end"
     }
   ],
