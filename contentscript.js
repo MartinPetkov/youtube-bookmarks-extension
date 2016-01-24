@@ -32,10 +32,9 @@ function showMessage(msg, color) {
   msg_box.text(msg);
   msg_box.css('color', color)
 
-  msg_box.css('display', 'block');
+  msg_box.css('visibility', 'visible');
   setTimeout(function() {
-    msg_box.css('display', 'none');
-    msg_box.text('');
+    msg_box.css('visibility', 'hidden');
   }, 5000)
 }
 
@@ -148,10 +147,10 @@ window.onload = function () {
     sidebar.append(add_bookmark_button);
 
     var description = $('<input type="text" name="youtube-bookmark-description" id="youtube-bookmark-description" placeholder="Description"></input>');
-    description.addClass('youtube-bookmark-description');
+    description.addClass('youtube-bookmark-description search-term masthead-search-renderer-input');
     sidebar.append(description);
 
-    var message_box = $('<span id="youtube-bookmark-message" style="display: none;"></span>');
+    var message_box = $('<span id="youtube-bookmark-message">Placeholder</span>');
     sidebar.append(message_box);
 
     var bookmarks_title = $(document.createElement('div'));
@@ -159,7 +158,7 @@ window.onload = function () {
     bookmarks_title.text('Bookmarks');
     sidebar.append(bookmarks_title);
 
-    var bookmarks_list = $(document.createElement('ul'));
+    var bookmarks_list = $(document.createElement('table'));
     bookmarks_list.attr('id', 'youtube-bookmarks-list');
     sidebar.append(bookmarks_list);
 

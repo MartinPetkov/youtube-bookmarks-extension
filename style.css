@@ -25,7 +25,7 @@ div#youtube-bookmarks-sidebar input#youtube-bookmark-description {
   text-align: center;
   vertical-align: middle;
   padding-bottom: 5px;
-  margin-top: 20px;
+  margin-top: 15px;
   margin-bottom: 5px;
   font-size: 20px;
   border-bottom: 1px solid #a3a3a3;
@@ -40,6 +40,7 @@ button.youtube-bookmarks-button:hover {
   background-color: #286090;
   border-color: #204d74;
   color: #fff;
+  border-radius: 3px;
 }
 
 .youtube-bookmark-description {
@@ -59,8 +60,8 @@ a.youtube-bookmark {
   line-height: 15px;
 }
 
-.youtube-bookmark-li {
-  margin-bottom: 10px;
+td.youtube-bookmark-td {
+  padding: 0px 0px 5px 0px;
 }
 
 /* Source: http://snipplr.com/view/10979/css-cross-browser-word-wrap */
@@ -74,6 +75,7 @@ a.youtube-bookmark {
 
 #youtube-bookmark-message {
   color: green;
+  visibility: hidden;
   display: block;
   text-align: center;
 }

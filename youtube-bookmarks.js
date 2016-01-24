@@ -41,9 +41,9 @@ function makeSeekTo(h, m, s){
 }
 
 function removeBookmark() {
-  var parent_li = $(this).parent();
-  window.postMessage({type: "FROM_PAGE", operation: "removed_bookmark", current_time: parent_li.attr('sec_num'), description: parent_li.attr('description')}, "*");
-  $(this).parent().remove();
+  var parent_tr = $(this).parent().parent();
+  window.postMessage({type: "FROM_PAGE", operation: "removed_bookmark", current_time: parent_tr.attr('sec_num'), description: parent_tr.attr('description')}, "*");
+  parent_tr.remove();
 }
 
 
@@ -57,20 +57,30 @@ function insertBookmark(sec_num, description) {
   var a_remove_btn = $('<button type="button" class="yt-uix-button yt-uix-button-default a-remove-btn" aria-label="Remove">X</button>');
   a_remove_btn.click(removeBookmark);
 
-  var li = $(document.createElement('li'));
-  li.addClass('youtube-bookmark-li');
-  li.attr('sec_num', sec_num);
-  li.attr('description', description);
-  li.append(a_remove_btn);
-  li.append(a);
+
+  var tr = $(document.createElement('tr'));
+  tr.attr('sec_num', sec_num);
+  tr.attr('description', description);
+
+  var td1 = $(document.createElement('td'));
+  td1.attr('width', '20%');
+  td1.addClass('youtube-bookmark-td');
+  td1.append(a_remove_btn);
+
+  var td2 = $(document.createElement('td'));
+  td2.attr('width', '80%');
+  td2.addClass('youtube-bookmark-td');
+  td2.append(a);
 
   if(description) {
     var desc = $(document.createElement('span'));
     desc.text(': ' + description);
-    li.append(desc);
+    td2.append(desc);
   }
 
-  $('#youtube-bookmarks-list').append(li);
+  tr.append(td1);
+  tr.append(td2);
+  $('#youtube-bookmarks-list').append(tr);
 }
 
 
