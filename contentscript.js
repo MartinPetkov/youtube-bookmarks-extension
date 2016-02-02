@@ -123,11 +123,15 @@ function addBookmark() {
 }
 
 
-window.onload = function () {
+function loadBookmarks() {
   yt = document.getElementById('movie_player');
 
   chrome.storage.sync.get('sidebarVisible', function(res) {
-    console.log(res);
+    // Remove old sidebar if it's there
+    var oldSidebar = $('#youtube-bookmarks-sidebar');
+    if(oldSidebar.length == 0) {
+      oldSidebar.remove();
+    }
 
     var visible = res['sidebarVisible'] && res['sidebarVisible']['visible'];
 
@@ -162,7 +166,7 @@ window.onload = function () {
     bookmarks_list.attr('id', 'youtube-bookmarks-list');
     sidebar.append(bookmarks_list);
 
-    // TODO: Load data from storage and add it to the list of bookmarks
+    // Load data from storage and add it to the list of bookmarks
     var url = getWatchUrl();
     chrome.storage.sync.get(url, function(res) {
       if(res[url]) {
@@ -175,11 +179,23 @@ window.onload = function () {
 
     sidebar.insertBefore(yt);
 
+    // Allow user to add bookmark with the Enter key
     $('#youtube-bookmark-description').keypress(function(e){
-        if(e.keyCode==13) {
+        if(e.keyCode == 13) {
           $('#youtube-bookmarks-button').click();
         }
     });
   });
 }
 
+
+window.onload = loadBookmarks;
+
+// Not the best way, but if user clicks on different video, reload bookmarks
+var currentUrl = window.location.href;
+setInterval(function() {
+  if(window.location.href != currentUrl) {
+    currentUrl = window.location.href;
+    loadBookmarks();
+  }
+}, 500);
